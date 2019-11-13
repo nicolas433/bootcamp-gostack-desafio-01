@@ -23,9 +23,9 @@ server.post('/projects', (req, res) =>{
     res.json({status: "Tarefa armazenada com sucesso!!!"})
 })
 
-
 server.get('/projects', (req, res) =>{
-    res.send("teste");
+    res.json(data);
 })
+
 
 server.listen(3003, () => console.log("Server on!!!"));
