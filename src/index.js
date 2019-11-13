@@ -30,10 +30,13 @@ server.get('/projects', (req, res) =>{
 })
 
 server.put('/projects/:id', (req, res) =>{
-    console.log(req.params.id);
     data[req.params.id].title = req.body.title;
-    req.params
-    res.json({status: "Tarefa armazenada com sucesso!!!"});
+    res.json({status: "Tarefa mudada com sucesso!!!"});
+})
+
+server.delete('/projects/:id', (req, res) =>{
+    data.splice(req.params.id, 1);
+    res.json({status: "Tarefa deletada com sucesso!!!"});
 })
 
 
