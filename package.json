@@ -3,5 +3,14 @@
   "version": "1.0.0",
   "main": "index.js",
   "author": "nicolas433 <ngrisoste@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "start": "nodemon src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.4"
+  }
 }
