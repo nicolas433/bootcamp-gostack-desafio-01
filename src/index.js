@@ -27,7 +27,7 @@ server.post('/projects', ReqExistsCheck, (req, res) =>{
         "tasks": tasks
     }
     data.push(new_data);
-    res.json({status: "Tarefa armazenada com sucesso!!!"});
+    res.json({status: 'Tarefa armazenada com sucesso!!!'});
 });
 
 server.get('/projects', (req, res) =>{
@@ -35,14 +35,20 @@ server.get('/projects', (req, res) =>{
 });
 
 server.put('/projects/:id', (req, res) =>{
-    data[req.params.id].title = req.body.title;
-    res.json({status: "Tarefa mudada com sucesso!!!"});
+    const id = req.params.id;
+    if(!data[id]){
+        res.json({status: 'Tarefa não existe!'});    
+    }else{
+        const title = req.body.title;
+        data[id].title = title; 
+        res.json({status: `Titulo da tarefa mudada com sucesso para '${title}'!`});
+    }
 });
 
 server.delete('/projects/:id', (req, res) =>{
     const { id } = req.params.id;
     if(!data[id]){
-        res.json({status: `Tarefa não existe!`});
+        res.json({status: 'Tarefa não existe!'});
     }else{
         let title = data[id].title;
         data.splice(id, 1);
