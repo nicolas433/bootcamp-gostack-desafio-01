@@ -1,4 +1,5 @@
-module.exports = (req, res, next) =>{
+module.exports = (req, res, next, data) =>{
+
     if(!req.body.title){
         res.json({"error": "A title is required!"});
         return 0;
@@ -6,6 +7,5 @@ module.exports = (req, res, next) =>{
     if(!req.body.tasks){
         req.body.tasks = [];
     }
-
     next();
 }

@@ -13,14 +13,16 @@ const express = require('express');
 const server = express();
 const AutoIncrement = require('./functions/AutoIncrement');
 const ReqExistsCheck = require('./middlewares/ReqExistsCheck');
+//const IdExistsCheck = require('./middlewares/IdExistsCheck');
 
 port = 3003;
 server.use(express.json());
+
 let data = [];
 
 server.post('/projects', ReqExistsCheck, (req, res) =>{
-    const {title, tasks} = req.body;
-    const id = AutoIncrement(data);
+    let {title, tasks} = req.body;
+    let id = AutoIncrement(data);
     new_data = {
         "id": id,
         "title": title,
@@ -35,7 +37,7 @@ server.get('/projects', (req, res) =>{
 });
 
 server.put('/projects/:id', (req, res) =>{
-    const id = req.params.id;
+    let id = req.params.id;
     if(!data[id]){
         res.json({status: 'Tarefa não existe!'});    
     }else{
@@ -46,35 +48,25 @@ server.put('/projects/:id', (req, res) =>{
 });
 
 server.delete('/projects/:id', (req, res) =>{
-    const { id } = req.params.id;
+    let { id } = req.params.id;
     if(!data[id]){
         res.json({status: 'Tarefa não existe!'});
     }else{
         let title = data[id].title;
         data.splice(id, 1);
-        res.json({status: `Tarefa de titulo "${title}", e id "${id}" deletada com sucesso!!!`});
+        res.json({status: `Tarefa de titulo '${title}', e id '${id}' deletada com sucesso!!!`});
     }
 });
 
-server.listen(port, () => console.log(`Server up on port ${port}!!!`));
-
-
-/*
-
-server.post('/projects/:id/:title', (req, res) =>{
-    const { id } = req.params;
-    console.log(req.body);
-    //const { task } = req.body;
-    console.log(data[id].tasks);
-    
-    data[id].tasks.push(task);
-    console.log(data);
-    res.json(data);
-    
-    const new_data = {id, title, tasks} = req.body;
-    data.push(new_data);
-    res.json({status: "Tarefa armazenada com sucesso!!!"});
-    
+server.post('/projects/:id/tasks', (req, res) =>{
+    let id = req.params.id;
+    if(!data[id]){
+        res.json({status: 'Tarefa não existe!'});
+    }else{
+        let title = req.body.title;
+        data[id].tasks.push(title);
+        res.json({status: `Tarefa '${title}', adicionada ao projeto '${data[id].title}'!`});
+    }
 })
 
-*/
+server.listen(port, () => console.log(`Server up on port ${port}!!!`));
