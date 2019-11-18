@@ -14,11 +14,9 @@ const server = express();
 const AutoIncrement = require('./functions/AutoIncrement');
 const ReqExistsCheck = require('./middlewares/ReqExistsCheck');
 
-
+port = 3003;
 server.use(express.json());
-
 let data = [];
-
 
 server.post('/projects', ReqExistsCheck, (req, res) =>{
     const {title, tasks} = req.body;
@@ -28,30 +26,34 @@ server.post('/projects', ReqExistsCheck, (req, res) =>{
         "title": title,
         "tasks": tasks
     }
-    console.log(new_data);
     data.push(new_data);
     res.json({status: "Tarefa armazenada com sucesso!!!"});
-})
-
-
-server.listen(3003, () => console.log("Server on!!!"));
-
-
-/*
+});
 
 server.get('/projects', (req, res) =>{
     res.json(data);
-})
+});
 
 server.put('/projects/:id', (req, res) =>{
     data[req.params.id].title = req.body.title;
     res.json({status: "Tarefa mudada com sucesso!!!"});
-})
+});
 
 server.delete('/projects/:id', (req, res) =>{
-    data.splice(req.params.id, 1);
-    res.json({status: "Tarefa deletada com sucesso!!!"});
-})
+    const { id } = req.params.id;
+    if(!data[id]){
+        res.json({status: `Tarefa não existe!`});
+    }else{
+        let title = data[id].title;
+        data.splice(id, 1);
+        res.json({status: `Tarefa de titulo "${title}", e id "${id}" deletada com sucesso!!!`});
+    }
+});
+
+server.listen(port, () => console.log(`Server up on port ${port}!!!`));
+
+
+/*
 
 server.post('/projects/:id/:title', (req, res) =>{
     const { id } = req.params;
