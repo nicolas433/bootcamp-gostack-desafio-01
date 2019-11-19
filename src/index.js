@@ -1,7 +1,6 @@
 const express = require('express');
 const server = express();
 
-const AutoIncrement = require('./functions/AutoIncrement');
 const ReqExistsCheck = require('./middlewares/ReqExistsCheck');
 const Counter = require('./middlewares/Counter');
 const IdExistsCheck = require('./middlewares/IdExistsCheck');
@@ -12,11 +11,13 @@ server.use(express.json());
 server.use(Counter);
 
 global.Counter = 0;
+let new_id = 0;
 global.data = [];
 
 server.post('/projects', ReqExistsCheck, (req, res) =>{
     const {title, tasks} = req.body;
-    const id = AutoIncrement(data);
+    const id = new_id;
+    new_id++;
     new_data = {
         "id": id,
         "title": title,
