@@ -1,28 +1,22 @@
-/* 
- Query params = ?parametro={valor}
-    req.query
- Route params = /users/{valor}
-    req.params
- Request body = { "post": "true", 
-                  "put": "true", 
-                  "get": "false", 
-                  "delete": "false" }
-*/
-
 const express = require('express');
 const server = express();
+
 const AutoIncrement = require('./functions/AutoIncrement');
 const ReqExistsCheck = require('./middlewares/ReqExistsCheck');
-//const IdExistsCheck = require('./middlewares/IdExistsCheck');
+const Counter = require('./middlewares/Counter');
+const IdExistsCheck = require('./middlewares/IdExistsCheck');
+const GetIndex = require('./functions/GetIndex');
+const port = 3003;
 
-port = 3003;
 server.use(express.json());
+server.use(Counter);
 
-let data = [];
+global.Counter = 0;
+global.data = [];
 
 server.post('/projects', ReqExistsCheck, (req, res) =>{
-    let {title, tasks} = req.body;
-    let id = AutoIncrement(data);
+    const {title, tasks} = req.body;
+    const id = AutoIncrement(data);
     new_data = {
         "id": id,
         "title": title,
@@ -36,37 +30,29 @@ server.get('/projects', (req, res) =>{
     res.json(data);
 });
 
-server.put('/projects/:id', (req, res) =>{
-    let id = req.params.id;
-    if(!data[id]){
-        res.json({status: 'Tarefa não existe!'});    
-    }else{
-        const title = req.body.title;
-        data[id].title = title; 
-        res.json({status: `Titulo da tarefa mudada com sucesso para '${title}'!`});
-    }
+server.put('/projects/:id', IdExistsCheck, (req, res) =>{
+    const id = req.params.id;
+    const index = GetIndex(id);
+    const new_title = req.body.title;
+    data[index].title = new_title;
+    res.json({status: `Titulo da tarefa mudada com sucesso para '${new_title}'!`});
 });
 
-server.delete('/projects/:id', (req, res) =>{
-    let { id } = req.params.id;
-    if(!data[id]){
-        res.json({status: 'Tarefa não existe!'});
-    }else{
-        let title = data[id].title;
-        data.splice(id, 1);
-        res.json({status: `Tarefa de titulo '${title}', e id '${id}' deletada com sucesso!!!`});
-    }
+server.delete('/projects/:id', IdExistsCheck, (req, res) =>{
+    const id  = req.params.id;
+    const index = GetIndex(id);
+    const title = data[index].title;
+    data.splice(index, 1);
+    res.json({status: `Tarefa de titulo '${title}', e id '${id}' deletada com sucesso!!!`});
 });
 
-server.post('/projects/:id/tasks', (req, res) =>{
-    let id = req.params.id;
-    if(!data[id]){
-        res.json({status: 'Tarefa não existe!'});
-    }else{
-        let title = req.body.title;
-        data[id].tasks.push(title);
-        res.json({status: `Tarefa '${title}', adicionada ao projeto '${data[id].title}'!`});
-    }
+server.post('/projects/:id/tasks', IdExistsCheck, (req, res) =>{
+    const id = req.params.id;
+    const new_task = req.body.title;
+    const index = GetIndex(id);
+    const title = data[index].title;
+    data[index].tasks.push(new_task);
+    res.json({status: `Tarefa '${new_task}', adicionada ao projeto '${title}'!`});
 })
 
 server.listen(port, () => console.log(`Server up on port ${port}!!!`));

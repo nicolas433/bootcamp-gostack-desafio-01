@@ -1,11 +1,9 @@
-module.exports = (req, res, next, data) =>{
+module.exports = (req, res, next) =>{
+    const id = req.params.id;
 
-    if(!req.body.title){
-        res.json({"error": "A title is required!"});
+    if(data.findIndex((item) => item.id == id)== -1){
+        res.json({"error": `O projeto de id '${id}' não existe`});
         return 0;
-    }
-    if(!req.body.tasks){
-        req.body.tasks = [];
     }
     next();
 }
